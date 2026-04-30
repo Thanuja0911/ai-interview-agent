@@ -6,9 +6,9 @@ An adaptive, resume aware technical interview system powered by a multi-agent AI
 
 ## Demo
 
-Watch the demo to understand the entire flow of the project.
+Kindly watch the demo to understand the entire flow of the project.
 
-> `![Demo](demo.gif)`
+> https://drive.google.com/file/d/1YS9OJLDj9snJcVd_CStiHHogitQIYFLB/view?usp=sharing
 
 ---
 
