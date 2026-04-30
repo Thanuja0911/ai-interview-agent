@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #0a0a0f;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+
+/* Smooth transitions on all interactive elements */
+button, input, textarea {
+  transition: all 0.15s ease;
+}
+
+/* Force input/textarea text color — overrides browser defaults */
+input, textarea {
+  color: #e2e8f0 !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #475569 !important;
+}
