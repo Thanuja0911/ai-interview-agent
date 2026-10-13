@@ -137,6 +137,36 @@ Frontend runs at `http://localhost:5173`
 
 ---
 
+## Testing
+
+### Backend unit tests
+
+The backend uses Python's built-in `unittest` — no extra dependencies and no API key required.
+
+```bash
+cd backend
+source venv/bin/activate
+
+# Run a single test module
+python -m unittest test_resume_parser -v
+```
+
+`test_resume_parser.py` covers PDF text extraction and cleaning. `pdfplumber` is mocked, so no real PDF files or network access are needed.
+
+> **Note:** `test_agent_loop.py` is **not** a unit test. It is a standalone terminal script that makes real calls to the Anthropic API, requires a valid `ANTHROPIC_API_KEY`, and is run with `python test_agent_loop.py`. Because it imports `agents.py` at module load, a blanket `python -m unittest discover` will attempt to import it and fail without a key — run unit tests by module name instead.
+
+### Frontend checks
+
+```bash
+cd frontend
+npm run lint     # ESLint
+npm run build    # production build check
+```
+
+There is currently no frontend test runner (no Jest/Vitest setup).
+
+---
+
 ## API Reference
 
 ### `POST /upload-resume`

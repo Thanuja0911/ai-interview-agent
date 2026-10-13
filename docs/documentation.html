@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Interview Agent — Project Documentation</title>
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --muted: #5b5b73;
+    --accent: #6d28d9;
+    --accent-soft: #f3eefe;
+    --line: #e2e0ec;
+    --code-bg: #f5f4fa;
+  }
+
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+  }
+
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  html { font-size: 10.5pt; }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4 { line-height: 1.25; color: var(--ink); }
+  h1 { font-size: 2.1rem; margin: 0 0 0.25rem; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 1.35rem;
+    margin: 2.2rem 0 0.8rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+    page-break-after: avoid;
+  }
+  h3 { font-size: 1.08rem; margin: 1.4rem 0 0.5rem; page-break-after: avoid; }
+  h4 { font-size: 0.98rem; margin: 1rem 0 0.35rem; color: var(--muted); page-break-after: avoid; }
+
+  p { margin: 0.55rem 0; }
+  ul, ol { margin: 0.55rem 0; padding-left: 1.3rem; }
+  li { margin: 0.22rem 0; }
+
+  a { color: var(--accent); text-decoration: none; }
+  strong { color: var(--ink); }
+
+  code {
+    font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.86em;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+  }
+
+  pre {
+    background: #16161f;
+    color: #e7e7f2;
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    page-break-inside: avoid;
+  }
+  pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    font-size: 0.88rem;
+    page-break-inside: avoid;
+  }
+  th, td { border: 1px solid var(--line); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  tr:nth-child(even) td { background: #fafafd; }
+
+  blockquote {
+    margin: 0.8rem 0;
+    padding: 0.6rem 0.9rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--muted);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.92rem;
+  }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 1.6rem 0; }
+
+  .cover {
+    text-align: center;
+    padding: 3.5rem 1rem 2.5rem;
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: 1.5rem;
+    page-break-after: always;
+  }
+  .cover .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid #ddd0f7;
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    margin-bottom: 1.4rem;
+    font-weight: 600;
+  }
+  .cover .subtitle { color: var(--muted); font-size: 1.05rem; margin-top: 0.4rem; }
+  .cover .meta { margin-top: 2.2rem; color: var(--muted); font-size: 0.85rem; }
+  .cover .meta strong { color: var(--ink); }
+
+  .toc { page-break-after: always; }
+  .toc ol { padding-left: 1.2rem; }
+  .toc a { color: var(--ink); }
+
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 0.7rem 0.95rem;
+    margin: 0.9rem 0;
+    background: #fbfaff;
+    font-size: 0.92rem;
+  }
+  .callout strong { color: var(--accent); }
+
+  .two-col { display: flex; gap: 1rem; }
+  .two-col > div { flex: 1; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-family: ui-monospace, Menlo, monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.05rem 0.4rem;
+    color: var(--muted);
+  }
+
+  .footer-note { color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<!-- ============================= COVER ============================= -->
+<section class="cover">
+  <div class="badge">Project Documentation</div>
+  <h1>AI Interview Agent</h1>
+  <p class="subtitle">An adaptive, resume-aware technical interview system<br/>powered by a multi-agent AI architecture.</p>
+  <p class="meta">
+    <strong>Stack:</strong> FastAPI · React · Anthropic Claude &nbsp;·&nbsp;
+    <strong>Model:</strong> claude-sonnet-4-5 &nbsp;·&nbsp;
+    <strong>Version:</strong> 1.0.0<br/>
+    <strong>Repository:</strong> github.com/Thanuja0911/interview-agent
+  </p>
+</section>
+
+<!-- ============================= TOC ============================= -->
+<section class="toc">
+  <h2 style="border:none;color:var(--ink);">Contents</h2>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#features">Key Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#stack">Tech Stack</a></li>
+    <li><a href="#structure">Repository Structure</a></li>
+    <li><a href="#setup">Getting Started</a></li>
+    <li><a href="#flow">Running an Interview</a></li>
+    <li><a href="#api">API Reference</a></li>
+    <li><a href="#loop">The Adaptive Interview Loop</a></li>
+    <li><a href="#agents">Agents &amp; Prompts</a></li>
+    <li><a href="#models">Data Models</a></li>
+    <li><a href="#testing">Testing</a></li>
+    <li><a href="#decisions">Design Notes &amp; Trade-offs</a></li>
+  </ol>
+</section>
+
+<!-- ============================= 1. OVERVIEW ============================= -->
+<h2 id="overview">1. Overview</h2>
+<p>
+  The <strong>AI Interview Agent</strong> conducts personalized technical interviews driven by a
+  candidate's resume. It evaluates each answer in real time using the <em>LLM-as-judge</em> pattern
+  and adapts question difficulty dynamically based on rolling performance. The system is built as
+  two independently run services: a Python/FastAPI backend that owns all AI orchestration and
+  session state, and a React single-page frontend that visualizes the live interview.
+</p>
+<p>
+  Unlike a single-prompt chatbot, the system uses <strong>specialized agents with distinct roles and
+  temperatures</strong> — a deterministic evaluator, a creative interviewer, and a holistic
+  scorecard generator — composed deliberately into an adaptive loop.
+</p>
+
+<!-- ============================= 2. FEATURES ============================= -->
+<h2 id="features">2. Key Features</h2>
+<h3>Multi-agent design with distinct roles</h3>
+<p>
+  Two specialized Claude agents run per interview turn. The <strong>EvaluatorAgent</strong> runs at
+  temperature 0 for consistent, deterministic judgment. The <strong>InterviewerAgent</strong> runs at
+  temperature 0.7 for varied, non-repetitive question generation. Each has a purpose-built system
+  prompt with explicit rubrics and behavioral rules.
+</p>
+<h3>Adaptive personalization from real signal</h3>
+<p>
+  A rolling average score is recalculated after every answer and mapped to a difficulty level using
+  concrete thresholds — above 7 escalates to hard, below 4 softens to easy. This changes the
+  interviewer's prompt context, which changes its tone, question depth, and topic selection.
+</p>
+<h3>LLM-as-judge evaluation made visible</h3>
+<p>
+  The evaluator returns a structured <code>AnswerScore</code> object validated by Pydantic before it
+  reaches the frontend. The UI surfaces this judgment live — score ring, depth badge, coaching
+  feedback, and follow-up detection — making the evaluation pipeline transparent.
+</p>
+<h3>Resume-aware context injection</h3>
+<p>
+  The full parsed resume is injected into every question-generation prompt, grounding questions in
+  the candidate's actual projects, technologies, and claims.
+</p>
+
+<!-- ============================= 3. ARCHITECTURE ============================= -->
+<h2 id="architecture">3. Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│          Frontend — React + Tailwind (5173)          │
+│  Sidebar │ ChatPanel │ ScorePanel │ ScorecardModal   │
+└────┬─────────┬──────────────┬───────────────┬───────┘
+     │         │              │               │
+     ▼         ▼              ▼               ▼
+/upload-resume  /start-session  /answer    /scorecard
+     │                          │
+     ▼                          ▼
+┌─────────────────────────────────────────────────────┐
+│              In-Memory Session Store                 │
+│  resume_text · job_role · conversation_history[]     │
+│  scores[] · turn_count · difficulty_level            │
+└──────────────────────┬──────────────────────────────┘
+                       │
+          ┌────────────┴────────────┐
+          ▼                         ▼
+   EvaluatorAgent           InterviewerAgent
+   temp=0 · LLM-as-judge    temp=0.7 · resume-aware
+   → AnswerScore (Pydantic)  → next question
+          │                         │
+          └────────────┬────────────┘
+                       ▼
+              Adaptive Logic
+         avg&gt;7 → hard · avg&lt;4 → easy
+                       │
+                       ▼
+           Scorecard Generator
+           Holistic eval · temp=0
+           → FinalScorecard (Pydantic)</code></pre>
+
+<p>
+  The frontend never talks to Claude directly. Every AI call is orchestrated by the backend, which
+  also owns all session state. The frontend is a pure presentation layer that renders scores,
+  difficulty changes, and the final report.
+</p>
+
+<!-- ============================= 4. STACK ============================= -->
+<h2 id="stack">4. Tech Stack</h2>
+<table>
+  <thead>
+    <tr><th>Layer</th><th>Technology</th><th>Version</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Frontend</td><td>React + Vite</td><td>React 19</td></tr>
+    <tr><td>Styling</td><td>Tailwind CSS</td><td>v3</td></tr>
+    <tr><td>Icons</td><td>lucide-react</td><td>—</td></tr>
+    <tr><td>Backend</td><td>FastAPI</td><td>0.136+</td></tr>
+    <tr><td>Server</td><td>Uvicorn</td><td>0.46+</td></tr>
+    <tr><td>AI Provider</td><td>Anthropic Claude</td><td>claude-sonnet-4-5</td></tr>
+    <tr><td>Resume Parsing</td><td>pdfplumber</td><td>0.11+</td></tr>
+    <tr><td>Validation</td><td>Pydantic</td><td>v2</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================= 5. STRUCTURE ============================= -->
+<h2 id="structure">5. Repository Structure</h2>
+<pre><code>interview-agent/
+├── backend/
+│   ├── main.py                 # FastAPI app — endpoints + adaptive interview loop
+│   ├── agents.py               # EvaluatorAgent, InterviewerAgent, scorecard generator
+│   ├── session_store.py        # In-memory session dict + difficulty logic
+│   ├── resume_parser.py        # PDF extraction + text cleaning (pdfplumber)
+│   ├── schemas.py              # Pydantic models (AnswerScore, FinalScorecard)
+│   ├── test_agent_loop.py      # Live terminal script (hits real Anthropic API)
+│   ├── test_resume_parser.py   # Unit tests (mocked pdfplumber, no API key)
+│   ├── requirements.txt        # Pinned Python dependencies
+│   └── .env.example            # ANTHROPIC_API_KEY placeholder
+└── frontend/
+    ├── src/
+    │   ├── api.js              # Central API service — all backend calls
+    │   ├── App.jsx             # Top-level state + interview orchestration
+    │   └── components/
+    │       ├── Sidebar.jsx         # Resume upload + role configuration
+    │       ├── ChatPanel.jsx       # Conversation + difficulty adaptation UI
+    │       ├── ScorePanel.jsx      # Live score ring, depth, coaching
+    │       └── ScorecardModal.jsx  # Final report + JSON export
+    ├── package.json
+    └── tailwind.config.js</code></pre>
+
+<!-- ============================= 6. SETUP ============================= -->
+<h2 id="setup">6. Getting Started</h2>
+
+<h3>Prerequisites</h3>
+<ul>
+  <li>Python 3.10+</li>
+  <li>Node.js 18+</li>
+  <li>An Anthropic API key (<a href="https://console.anthropic.com">console.anthropic.com</a>)</li>
+</ul>
+
+<h3>Backend</h3>
+<pre><code>cd backend
+python -m venv venv
+source venv/bin/activate          # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env              # then add your ANTHROPIC_API_KEY
+uvicorn main:app --reload --port 8000</code></pre>
+<p>
+  Backend runs at <code>http://localhost:8000</code>; interactive API docs at
+  <code>http://localhost:8000/docs</code>.
+</p>
+
+<h3>Frontend</h3>
+<pre><code>cd frontend
+npm install
+npm run dev</code></pre>
+<p>Frontend runs at <code>http://localhost:5173</code>.</p>
+
+<div class="callout">
+  <strong>Ports are coupled.</strong> The frontend hardcodes the backend URL in
+  <code>src/api.js</code> (<code>http://localhost:8000</code>), and the backend CORS policy in
+  <code>main.py</code> allows only <code>http://localhost:5173</code>. Changing a port in one place
+  without the other breaks the connection.
+</div>
+
+<h3>Environment Variables</h3>
+<table>
+  <thead><tr><th>Variable</th><th>Where</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>ANTHROPIC_API_KEY</code></td><td><code>backend/.env</code></td><td>Authenticates all Claude calls. Required.</td></tr>
+  </tbody>
+</table>
+<p class="footer-note">
+  The client is constructed at import time in <code>agents.py</code>; without a key, every agent call fails.
+  The model is pinned to <code>claude-sonnet-4-5</code> — never use a "latest" alias in production.
+</p>
+
+<!-- ============================= 7. FLOW ============================= -->
+<h2 id="flow">7. Running an Interview</h2>
+<ol>
+  <li>Open <code>http://localhost:5173</code>.</li>
+  <li>Upload a PDF resume in the left sidebar.</li>
+  <li>Enter a target job role and optional company context.</li>
+  <li>Click <strong>Start Interview</strong> — the first question is generated immediately.</li>
+  <li>Answer in the chat panel; watch the score ring and difficulty badge update live.</li>
+  <li>Click <strong>Finish Interview</strong> after 2+ turns (5+ recommended) to generate the scorecard.</li>
+  <li>Click <strong>Export Report</strong> to download the full interview artifact as JSON.</li>
+</ol>
+
+<!-- ============================= 8. API ============================= -->
+<h2 id="api">8. API Reference</h2>
+
+<h3>POST /upload-resume</h3>
+<p>Upload a PDF resume and initialize a session. <span class="tag">multipart/form-data</span></p>
+<p><strong>Request:</strong> field <code>file</code> (PDF only).</p>
+<pre><code>{
+  "session_id": "uuid-string",
+  "resume_preview": "First 300 characters of parsed resume...",
+  "character_count": 2847
+}</code></pre>
+
+<h3>POST /start-session</h3>
+<p>Attach a job role to a session and generate the first question.</p>
+<pre><code>{
+  "session_id": "uuid-string",
+  "job_role": "Senior Frontend Engineer",
+  "company_context": "Fast-growing fintech startup"
+}</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>{
+  "status": "session_ready",
+  "session_id": "uuid-string",
+  "job_role": "Senior Frontend Engineer",
+  "first_question": "You built a React weather app and ran into CORS errors...",
+  "difficulty_level": "medium"
+}</code></pre>
+
+<h3>POST /answer</h3>
+<p>Submit a candidate answer. Runs the full adaptive interview loop.</p>
+<pre><code>{
+  "session_id": "uuid-string",
+  "current_question": "Walk me through how you fixed the CORS error...",
+  "answer": "I routed the request through a Netlify serverless function..."
+}</code></pre>
+<p><strong>Response:</strong></p>
+<pre><code>{
+  "next_question": "You mentioned serverless functions — what are the cold start...",
+  "score": {
+    "score": 7,
+    "depth": "strong",
+    "relevance": "high",
+    "feedback": "Good instinct on the proxy — next time mention the trade-offs...",
+    "follow_up_needed": false
+  },
+  "rolling_average": 6.5,
+  "difficulty_level": "medium",
+  "difficulty_changed": false,
+  "difficulty_direction": null,
+  "turn_count": 1,
+  "session_complete": false
+}</code></pre>
+
+<h3>GET /scorecard/{session_id}</h3>
+<p>Generate and return the final interview scorecard. Requires at least 2 completed turns.</p>
+<pre><code>{
+  "overall_score": 7.2,
+  "strengths": ["..."],
+  "improvement_areas": ["..."],
+  "hiring_recommendation": "yes",
+  "per_turn_scores": [...],
+  "summary": "...",
+  "session_metadata": {
+    "job_role": "Junior Frontend Engineer",
+    "company_context": "Early-stage startup",
+    "total_turns": 5,
+    "final_difficulty_reached": "hard"
+  },
+  "conversation_history": [...],
+  "raw_scores": [...]
+}</code></pre>
+
+<!-- ============================= 9. LOOP ============================= -->
+<h2 id="loop">9. The Adaptive Interview Loop</h2>
+<p>
+  The single <code>POST /answer</code> endpoint <em>is</em> the adaptive engine. Each call executes,
+  in order:
+</p>
+<ol>
+  <li>Validate the session exists and has required context.</li>
+  <li>Sanitize and append the candidate's answer to conversation history.</li>
+  <li>Run the EvaluatorAgent to score the answer → <code>AnswerScore</code>.</li>
+  <li>Store the score in the session.</li>
+  <li>Recalculate the rolling average across all turns.</li>
+  <li>Map the average to a difficulty level.</li>
+  <li>Run the InterviewerAgent to generate the next question with full updated context.</li>
+  <li>Append the next question to conversation history.</li>
+  <li>Return the next question, score, rolling average, and difficulty to the frontend.</li>
+</ol>
+<p>
+  <strong>Difficulty thresholds</strong> (<code>session_store.py</code>): rolling average
+  <code>&gt; 7</code> → <span class="tag">hard</span>,
+  <code>&lt; 4</code> → <span class="tag">easy</span>,
+  otherwise <span class="tag">medium</span>. The interview is flagged complete at
+  <code>turn_count &gt;= 5</code>.
+</p>
+
+<!-- ============================= 10. AGENTS ============================= -->
+<h2 id="agents">10. Agents &amp; Prompts</h2>
+<table>
+  <thead><tr><th>Agent</th><th>Temperature</th><th>Input</th><th>Output</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>EvaluatorAgent</strong></td>
+      <td>0.0</td>
+      <td>Question, answer, job role</td>
+      <td><code>AnswerScore</code> JSON (score, depth, relevance, feedback, follow_up_needed)</td>
+    </tr>
+    <tr>
+      <td><strong>InterviewerAgent</strong></td>
+      <td>0.7</td>
+      <td>Resume, role, history, difficulty, follow-up signal</td>
+      <td>Next question (plain text)</td>
+    </tr>
+    <tr>
+      <td><strong>Scorecard Generator</strong></td>
+      <td>0.0</td>
+      <td>Full transcript, per-turn scores, resume</td>
+      <td><code>FinalScorecard</code> JSON (holistic evaluation)</td>
+    </tr>
+  </tbody>
+</table>
+<p>
+  The evaluator's rubric scores 1–10 across three bands (shallow / adequate / strong) and returns a
+  single actionable coaching sentence. The interviewer is explicitly instructed to never repeat a
+  covered topic, always ground questions in the resume, and adapt tone to the difficulty level.
+</p>
+<div class="callout">
+  <strong>Defensive parsing.</strong> Despite instructions to return raw JSON, Claude frequently wraps
+  output in markdown fences. All agent responses are cleaned (fences stripped) before Pydantic
+  validation; a parse failure raises <code>ValueError</code>, which the API surfaces as HTTP 500.
+</div>
+
+<!-- ============================= 11. MODELS ============================= -->
+<h2 id="models">11. Data Models</h2>
+<h3>AnswerScore</h3>
+<pre><code>class AnswerScore(BaseModel):
+    score: int                    # 1-10
+    depth: Literal["shallow", "adequate", "strong"]
+    relevance: Literal["low", "medium", "high"]
+    feedback: str                 # one coaching line shown to candidate
+    follow_up_needed: bool        # true if answer was incomplete</code></pre>
+<h3>FinalScorecard</h3>
+<pre><code>class FinalScorecard(BaseModel):
+    overall_score: float
+    strengths: List[str]
+    improvement_areas: List[str]
+    hiring_recommendation: Literal["strong_yes", "yes", "maybe", "no"]
+    per_turn_scores: List[AnswerScore]
+    summary: str</code></pre>
+
+<!-- ============================= 12. TESTING ============================= -->
+<h2 id="testing">12. Testing</h2>
+
+<h3>Backend unit tests</h3>
+<p>
+  The backend uses Python's built-in <code>unittest</code> — no extra dependencies and no API key
+  required. <code>pdfplumber</code> is mocked, so no real PDF files or network access are needed.
+</p>
+<pre><code>cd backend
+source venv/bin/activate
+
+# Run a single test module
+python -m unittest test_resume_parser -v</code></pre>
+<div class="callout">
+  <strong>Note:</strong> <code>test_agent_loop.py</code> is <strong>not</strong> a unit test — it is a
+  standalone terminal script that makes real calls to the Anthropic API and requires a valid key.
+  Because it imports <code>agents.py</code> at module load, a blanket
+  <code>python -m unittest discover</code> will attempt to import it and fail without a key. Run unit
+  tests by module name instead.
+</div>
+
+<h3>Frontend checks</h3>
+<pre><code>cd frontend
+npm run lint     # ESLint
+npm run build    # production build check</code></pre>
+<p class="footer-note">There is currently no frontend test runner (no Jest/Vitest setup).</p>
+
+<!-- ============================= 13. DECISIONS ============================= -->
+<h2 id="decisions">13. Design Notes &amp; Trade-offs</h2>
+<ul>
+  <li>
+    <strong>In-memory session store.</strong> A plain module-level dict — fast and zero-infrastructure,
+    but a server restart loses all sessions. The store is deliberately isolated so a Redis swap with
+    TTL-keyed sessions is a one-file change.
+  </li>
+  <li>
+    <strong>Separate scorecard LLM call.</strong> The final evaluation is not a mathematical average of
+    turn scores — trajectory and recovery matter. A candidate who scored 3,3,9,9,9 differs
+    fundamentally from one who scored 6,6,6,6,6, even with similar averages.
+  </li>
+  <li>
+    <strong>Agentic loop design.</strong> Agents are treated as functions with specific inputs and
+    outputs, composed deliberately — not as opaque "AI magic." Getting session-state injection right
+    is the core engineering challenge.
+  </li>
+  <li>
+    <strong>Answer sanitization.</strong> Candidate answers are Unicode-normalized and stripped of
+    control characters before being appended to history, guarding JSON serialization against
+    copy-pasted or voice-transcribed text.
+  </li>
+</ul>
+
+<hr/>
+<p class="footer-note">
+  AI Interview Agent — Project Documentation · Licensed under MIT.
+</p>
+
+</body>
+</html>
